@@ -11,15 +11,13 @@
   <!-- Configuration & Protected Meta Pixel -->
   <script>
     const CONFIG = {
-      // Base64 encoded "https://t.me/tradewithmunaaf001" to stop bot pre-fetching
+      // Base64 encoded "https://t.me/tradewithmunaaf001"
       tgPart1: "aHR0cHM6Ly90Lm1lLw==",
       tgPart2: "dHJhZGV3aXRobXVuYWFmMDAx",
-      logoImageUrl: "PASTE_YOUR_IMAGE_URL_HERE", // <-- Yahan apna Image URL paste karein
-      pixelId: "YOUR_PIXEL_ID",                  // <-- Yahan apna Meta Pixel ID paste karein
-      minDwellMs: 1800                           // Minimum 1.8 sec stay required before click counts
+      pixelId: "YOUR_PIXEL_ID",
+      minDwellMs: 1800
     };
 
-    // Detect Crawlers, Headless Browsers & Automation Bots
     const isBotTraffic = (() => {
       const ua = (navigator.userAgent || "").toLowerCase();
       const botPattern = /bot|crawl|spider|facebookexternalhit|facebot|slurp|headless|phantom|selenium|puppeteer|playwright|lighthouse|bytespider|curl|wget|python/i;
@@ -30,7 +28,6 @@
       return false;
     })();
 
-    // Initialize Meta Pixel ONLY for non-bot browsers
     if (!isBotTraffic) {
       !function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?
       n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;
@@ -216,7 +213,7 @@
       height: 100%;
       object-fit: cover;
       border-radius: 14.5px;
-      display: none;
+      display: block;
     }
 
     .pro-badge {
@@ -336,7 +333,6 @@
       transform: scale(0.98);
     }
 
-    /* Honeypot hidden trap for bots */
     .hp-trap {
       position: absolute;
       left: -9999px;
@@ -653,11 +649,7 @@
       <!-- Hero Section -->
       <div class="hero">
         <div class="logo-box">
-          <img id="brandLogoImg" alt="Trade With Munaaf" />
-          <svg id="defaultLogoSvg" width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="#f5b027" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-            <polyline points="22 7 13.5 15.5 8.5 10.5 2 17"></polyline>
-            <polyline points="16 7 22 7 22 13"></polyline>
-          </svg>
+          <img src="munaaf.jpg" alt="Trade With Munaaf" />
           <span class="pro-badge">✓ PRO</span>
         </div>
 
@@ -790,19 +782,6 @@
   </div>
 
   <script>
-    // Load custom profile/brand image if provided in CONFIG.logoImageUrl
-    (function loadBrandImage() {
-      const img = document.getElementById('brandLogoImg');
-      const svg = document.getElementById('defaultLogoSvg');
-      if (CONFIG.logoImageUrl && CONFIG.logoImageUrl !== "PASTE_YOUR_IMAGE_URL_HERE") {
-        img.src = "munaaf.jpg"
-        img.onload = () => {
-          img.style.display = 'block';
-          svg.style.display = 'none';
-        };
-      }
-    })();
-
     // Subtle live candlestick animation
     setInterval(() => {
       const candles = document.querySelectorAll('#candleChart .candle');
@@ -830,15 +809,12 @@
     function verifyAndJoin(e) {
       if (e) e.preventDefault();
 
-      // Layer 1: Block known bots, headless browsers, or honeypot-tripped scripts
       if (isBotTraffic || window.__botFlagged) return;
 
-      // Layer 2: Verify click is an authentic browser user event with real screen coordinates
       if (e && (!e.isTrusted || (e.clientX === 0 && e.clientY === 0 && e.pointerType !== 'touch'))) {
         return;
       }
 
-      // Layer 3: Enforce minimum human dwell time (prevents instant automated clickers)
       const elapsed = Date.now() - pageLoadTime;
       if (elapsed < CONFIG.minDwellMs) {
         const btnText = document.getElementById('ctaText');
@@ -851,7 +827,6 @@
         return;
       }
 
-      // Layer 4: Require at least 1 trusted interaction signal
       if (humanSignals < 1) return;
 
       executeVerifiedRedirect();
@@ -860,7 +835,6 @@
     function executeVerifiedRedirect() {
       const targetUrl = getDecodedTelegramUrl();
 
-      // Layer 5: Fire Meta Pixel ONLY ONCE per real human session (Zero duplicate/fake counts)
       if (!sessionStorage.getItem('twm_real_lead_fired')) {
         sessionStorage.setItem('twm_real_lead_fired', '1');
         if (typeof fbq === 'function' && CONFIG.pixelId !== "YOUR_PIXEL_ID") {
@@ -869,7 +843,6 @@
         }
       }
 
-      // Redirect real member to Telegram
       setTimeout(() => {
         window.location.href = targetUrl;
       }, 150);
